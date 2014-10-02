@@ -1,5 +1,5 @@
 
-app.controller('MapCtrl', function ($scope, $ionicLoading, $window, busData) {
+app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window, busData) {
     "use strict";
 
     var busMarkers = [];
@@ -14,6 +14,7 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $window, busData) {
     };
 
     $scope.centerOnMe = showMyLocation;
+    $scope.showAbout = showAbout;
 
     setInterval(showLiveBus, 15000);
 
@@ -90,5 +91,15 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $window, busData) {
         }, { enableHighAccuracy: true });
 
     };
+
+    function showAbout() {
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+            title: 'github.com/figueiredorui/livejsybus',
+            template: 'github.com/figueiredorui/livejsybus'
+        });
+        alertPopup.then(function (res) {
+        });
+    }
 })
 
