@@ -1,5 +1,5 @@
 
-app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window, busData) {
+app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $ionicModal, $window, busData) {
     "use strict";
 
     var busMarkers = [];
@@ -15,6 +15,7 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
     };
 
     $scope.statusMessage = '';
+    $scope.autoCenter = true;
 
     $scope.centerOnMe = centerMyLocation;
     $scope.showAbout = showAbout;
@@ -75,7 +76,8 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
 
         navigator.geolocation.watchPosition(function (pos) {
 
-            // $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            if ($scope.autoCenter)
+                $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
 
             if (myLocationMarker != null)
                 myLocationMarker.setMap(null);
@@ -96,7 +98,6 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
             $scope.statusMessage = '';
 
         }, function (error) {
-            // alert('Unable to get location: ' + error.message);
             $scope.statusMessage = 'Unable to get location';
         }, { enableHighAccuracy: true, timeout: 30000 });
 
