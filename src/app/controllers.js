@@ -9,11 +9,14 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
     $scope.mapCreated = function (map) {
 
         $scope.map = map;
+        centerMyLocation();
         showMyLocation();
         showLiveBus();
     };
 
-    $scope.centerOnMe = showMyLocation;
+    $scope.statusMessage = '';
+
+    $scope.centerOnMe = centerMyLocation;
     $scope.showAbout = showAbout;
 
     setInterval(showLiveBus, 15000);
@@ -57,9 +60,13 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
             busMarkers_old.forEach(function (_marker) {
                 _marker.setMap(null);
             });
+
+            $scope.statusMessage = '';
+        }).error(function (result) {
+            $scope.statusMessage = 'Unable to get bus data';
         });
     }
-    
+
     function showMyLocation() {
 
         if (!$scope.map) {
@@ -68,7 +75,7 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
 
         navigator.geolocation.watchPosition(function (pos) {
 
-            $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            // $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
 
             if (myLocationMarker != null)
                 myLocationMarker.setMap(null);
@@ -86,9 +93,31 @@ app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicPopup, $window,
                 }
             })(myLocationMarker));
 
+            $scope.statusMessage = '';
+
         }, function (error) {
-            alert('Unable to get location: ' + error.message);
-        }, { enableHighAccuracy: true });
+            // alert('Unable to get location: ' + error.message);
+            $scope.statusMessage = 'Unable to get location';
+        }, { enableHighAccuracy: true, timeout: 30000 });
+
+    };
+
+    function centerMyLocation() {
+
+        if (!$scope.map) {
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(function (pos) {
+
+            $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+
+            $scope.statusMessage = '';
+
+        }, function (error) {
+            // alert('Unable to get location: ' + error.message);
+            $scope.statusMessage = 'Unable to get location';
+        }, { enableHighAccuracy: true, timeout: 30000 });
 
     };
 
